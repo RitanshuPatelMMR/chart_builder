@@ -1,0 +1,43 @@
+import { ChartConfig, ChartTheme, CHART_THEMES } from '@/types/chart';
+import { cn } from '@/lib/utils';
+
+interface ChartCustomizerProps {
+  config: ChartConfig;
+  onUpdate: (updates: Partial<ChartConfig>) => void;
+}
+
+export function ChartCustomizer({ config, onUpdate }: ChartCustomizerProps) {
+  return (
+    <div className="rounded-lg border bg-card p-6">
+      <h3 className="text-base font-medium mb-4">Color Theme</h3>
+      <div className="flex flex-wrap gap-3">
+        {(Object.entries(CHART_THEMES) as [ChartTheme, { name: string; colors: string[] }][]).map(
+          ([key, { name, colors }]) => (
+            <button
+              key={key}
+              onClick={() => onUpdate({ theme: key })}
+              className={cn(
+                'flex items-center gap-2 rounded-lg border px-4 py-2.5',
+                'hover:border-primary/50 transition-colors',
+                config.theme === key 
+                  ? 'border-primary bg-primary/5 text-primary' 
+                  : 'border-border bg-background'
+              )}
+            >
+              <div className="flex gap-0.5">
+                {colors.slice(0, 4).map((color, idx) => (
+                  <div
+                    key={idx}
+                    className="h-3 w-3 rounded-full"
+                    style={{ backgroundColor: color }}
+                  />
+                ))}
+              </div>
+              <span className="text-sm font-medium">{name}</span>
+            </button>
+          )
+        )}
+      </div>
+    </div>
+  );
+}
