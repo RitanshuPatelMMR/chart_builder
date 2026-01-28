@@ -1,5 +1,6 @@
 import { useUser, useAuth } from "@clerk/clerk-react";
 import { useState, useEffect } from "react";
+import { API_ENDPOINTS } from "@/config/api";
 
 export function useRole() {
     const { user, isLoaded } = useUser();
@@ -16,7 +17,7 @@ export function useRole() {
 
             try {
                 const token = await getToken();
-                const res = await fetch("http://localhost:3000/api/user/me", {
+                const res = await fetch(API_ENDPOINTS.user.me, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

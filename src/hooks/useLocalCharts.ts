@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { SavedChart } from "@/types/chart";
 import { useAuth } from "@clerk/clerk-react";
-
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+import { API_ENDPOINTS } from "@/config/api";
 
 export function useLocalCharts() {
     const { getToken, isLoaded, isSignedIn } = useAuth();
@@ -12,7 +11,7 @@ export function useLocalCharts() {
 
     // helper to call API with auth header
     const apiFetch = useCallback(
-        async (path: string, options: RequestInit = {}) => {
+        async (url: string, options: RequestInit = {}) => {
             const token = await getToken();
             if (!token) {
                 throw new Error("No auth token available");
@@ -22,7 +21,7 @@ export function useLocalCharts() {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
             };
-            const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
+            const res = await fetch(url, { ...options, headers });
             if (!res.ok) {
                 const text = await res.text();
                 throw new Error(`API error ${res.status}: ${text}`);
@@ -43,13 +42,13 @@ export function useLocalCharts() {
 
         (async () => {
             try {
-                const res = await apiFetch("/api/charts");
+                const res = await apiFetch(API_ENDPOINTS.charts.list);
                 const data = (await res.json()) as SavedChart[];
                 console.log("📥 Charts loaded:", data.length, "charts");
                 setCharts(data);
             } catch (e) {
                 console.error("❌ Failed to load charts", e);
-                hasFetchedRef.current = false; // retry on next render
+                hasFetchedRef.current = false;
             } finally {
                 setIsLoading(false);
             }
@@ -59,14 +58,13 @@ export function useLocalCharts() {
     const saveChart = useCallback(
         async (chart: Omit<SavedChart, "id" | "createdAt" | "updatedAt">) => {
             console.log("🔵 Saving chart:", chart.name);
-            const res = await apiFetch("/api/charts", {
+            const res = await apiFetch(API_ENDPOINTS.charts.create, {
                 method: "POST",
                 body: JSON.stringify(chart),
             });
             const saved = (await res.json()) as SavedChart;
             console.log("✅ Chart saved with ID:", saved.id);
 
-            // ✅ IMMEDIATELY add to state (optimistic update)
             setCharts((prev) => {
                 const updated = [saved, ...prev];
                 console.log("📊 Total charts now:", updated.length);
@@ -84,7 +82,7 @@ export function useLocalCharts() {
             updates: Partial<Omit<SavedChart, "id" | "createdAt">>
         ) => {
             console.log("🔵 Updating chart:", id);
-            const res = await apiFetch(`/api/charts/${id}`, {
+            const res = await apiFetch(API_ENDPOINTS.charts.update(id), {
                 method: "PUT",
                 body: JSON.stringify(updates),
             });
@@ -102,7 +100,7 @@ export function useLocalCharts() {
     const deleteChart = useCallback(
         async (id: string) => {
             console.log("🔵 Deleting chart:", id);
-            const res = await apiFetch(`/api/charts/${id}`, {
+            const res = await apiFetch(API_ENDPOINTS.charts.delete(id), {
                 method: "DELETE",
             });
             const body = await res.json();
@@ -119,7 +117,7 @@ export function useLocalCharts() {
     const duplicateChart = useCallback(
         async (id: string) => {
             console.log("🔵 Duplicating chart:", id);
-            const res = await apiFetch(`/api/charts/${id}/duplicate`, {
+            const res = await apiFetch(API_ENDPOINTS.charts.duplicate(id), {
                 method: "POST",
             });
             const duplicated = (await res.json()) as SavedChart;
@@ -134,7 +132,7 @@ export function useLocalCharts() {
     const getChart = useCallback(
         async (id: string) => {
             console.log("🔵 Fetching chart:", id);
-            const res = await apiFetch(`/api/charts/${id}`);
+            const res = await apiFetch(API_ENDPOINTS.charts.get(id));
             const chart = (await res.json()) as SavedChart;
             return chart;
         },
@@ -143,7 +141,7 @@ export function useLocalCharts() {
 
     const refreshCharts = useCallback(async () => {
         console.log("🔄 Refreshing charts...");
-        const res = await apiFetch("/api/charts");
+        const res = await apiFetch(API_ENDPOINTS.charts.list);
         const data = (await res.json()) as SavedChart[];
         console.log("📥 Refreshed:", data.length, "charts");
         setCharts(data);

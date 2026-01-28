@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { AdminUser } from "@/types/admin";
 import { AlertCircle } from "lucide-react";
+import { API_ENDPOINTS } from "@/config/api";
 
 export default function AdminUsers() {
     const { getToken } = useAuth();
@@ -23,7 +24,7 @@ export default function AdminUsers() {
                     throw new Error("No authentication token");
                 }
 
-                const res = await fetch("http://localhost:3000/api/admin/users", {
+                const res = await fetch(API_ENDPOINTS.admin.users, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 

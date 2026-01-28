@@ -12,6 +12,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { API_ENDPOINTS } from "@/config/api";
 
 type Period = "week" | "month" | "year";
 
@@ -32,7 +33,7 @@ export function UserGrowthChart() {
       try {
         const token = await getToken();
         const res = await fetch(
-            `http://localhost:3000/api/admin/growth?period=${period}`,
+            `${API_ENDPOINTS.admin.growth}?period=${period}`,
             { headers: { Authorization: `Bearer ${token}` } }
         );
 

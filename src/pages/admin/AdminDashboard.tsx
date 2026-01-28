@@ -9,6 +9,7 @@ import { RevenueChart } from "@/components/admin/RevenueChart";
 import { UserPlanChart } from "@/components/admin/UserPlanChart";
 import { DashboardCalendar } from "@/components/admin/DashboardCalendar";
 import { Skeleton } from "@/components/ui/skeleton";
+import { API_ENDPOINTS } from "@/config/api";
 
 interface Metrics {
   totalUsers: number;
@@ -27,7 +28,7 @@ export default function AdminDashboard() {
     async function fetchMetrics() {
       try {
         const token = await getToken();
-        const res = await fetch("http://localhost:3000/api/admin/metrics", {
+        const res = await fetch(API_ENDPOINTS.admin.metrics, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
