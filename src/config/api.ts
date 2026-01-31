@@ -23,6 +23,6 @@ export const API_ENDPOINTS = {
         get: (id: string) => `${API_BASE_URL}/api/charts/${id}`,
         update: (id: string) => `${API_BASE_URL}/api/charts/${id}`,
         delete: (id: string) => `${API_BASE_URL}/api/charts/${id}`,
-        duplicate: (id: string) => `${API_BASE_URL}/api/charts/${id}/duplicate`,
+        duplicate: (id: string) => `${API_BASE_URL}/api/charts/duplicate?id=${id}`, // ✅ Changed
     },
 };

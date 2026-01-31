@@ -27,3 +27,18 @@ dist-ssr
 .env.local
 .env.*.local
 server/.env
+.env.production
+
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+.vercel/
+
+
+
+
+# OS
+Thumbs.db
+.vercel

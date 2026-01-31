@@ -156,22 +156,24 @@ export const ChartPreview = forwardRef<HTMLDivElement, ChartPreviewProps>(
       }
     };
 
-    return (
-      <div 
-        ref={ref} 
-        className="space-y-4 bg-white p-6 rounded-lg"
-        style={{ backgroundColor: '#ffffff', color: '#000000' }}
-      >
-        {title && (
-          <h2 className="text-lg font-semibold text-center" style={{ color: '#000000' }}>{title}</h2>
-        )}
-        <div className="h-[400px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            {renderChart() as React.ReactElement}
-          </ResponsiveContainer>
-        </div>
-      </div>
-    );
+      return (
+          <div
+              ref={ref}
+              className="space-y-4 bg-white p-3 sm:p-6 rounded-lg min-w-0"
+              style={{ backgroundColor: '#ffffff', color: '#000000' }}
+          >
+              {title && (
+                  <h2 className="text-base sm:text-lg font-semibold text-center break-words" style={{ color: '#000000' }}>
+                      {title}
+                  </h2>
+              )}
+              <div className="h-[300px] sm:h-[400px] w-full min-w-0">
+                  <ResponsiveContainer width="100%" height="100%">
+                      {renderChart() as React.ReactElement}
+                  </ResponsiveContainer>
+              </div>
+          </div>
+      );
   }
 );
 

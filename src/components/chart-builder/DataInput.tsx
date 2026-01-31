@@ -151,9 +151,9 @@ export function DataInput({ onDataLoad }: DataInputProps) {
         <TabsContent value="upload" className="mt-4">
           <div
               className={`
-            relative rounded-lg border-2 border-dashed p-8 text-center cursor-pointer transition-colors
-            ${isDragging ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}
-          `}
+      relative rounded-lg border-2 border-dashed p-6 sm:p-8 text-center cursor-pointer transition-colors
+      ${isDragging ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}
+    `}
               onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
               onDragLeave={() => setIsDragging(false)}
               onDrop={handleDrop}
@@ -169,11 +169,15 @@ export function DataInput({ onDataLoad }: DataInputProps) {
                   if (file) handleFile(file);
                 }}
             />
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 mb-4">
-              <Upload className="h-6 w-6 text-primary" />
+            <div className="mx-auto flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-primary/10 mb-3 sm:mb-4">
+              <Upload className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
             </div>
-            <p className="text-sm font-medium mb-1">Drop your file here, or click to browse</p>
-            <p className="text-xs text-muted-foreground">Supports Excel (.xlsx) and CSV files up to 5MB</p>
+            <p className="text-xs sm:text-sm font-medium mb-1">
+              Drop your file here, or click to browse
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Supports Excel (.xlsx) and CSV files up to 5MB
+            </p>
           </div>
         </TabsContent>
 
