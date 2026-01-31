@@ -104,7 +104,7 @@ export default function About() {
             </h2>
             <div className="flex flex-col sm:flex-row gap-6 items-start">
               <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted text-2xl font-semibold text-muted-foreground shrink-0">
-                JD
+                RP
               </div>
               <div className="space-y-4">
                 <div>
