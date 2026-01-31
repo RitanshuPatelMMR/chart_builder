@@ -1,12 +1,12 @@
-import { createContext, useContext, ReactNode } from 'react';
-import { useLocalCharts } from '@/hooks/useLocalCharts';
+import { createContext, useContext, ReactNode } from "react";
+import { useChartsApi } from "@/hooks/useChartsApi";
 
-type ChartsContextType = ReturnType<typeof useLocalCharts>;
+type ChartsContextType = ReturnType<typeof useChartsApi>;
 
 const ChartsContext = createContext<ChartsContextType | null>(null);
 
 export function ChartsProvider({ children }: { children: ReactNode }) {
-    const chartsData = useLocalCharts();
+    const chartsData = useChartsApi();
 
     return (
         <ChartsContext.Provider value={chartsData}>
@@ -18,7 +18,7 @@ export function ChartsProvider({ children }: { children: ReactNode }) {
 export function useCharts() {
     const context = useContext(ChartsContext);
     if (!context) {
-        throw new Error('useCharts must be used within ChartsProvider');
+        throw new Error("useCharts must be used within ChartsProvider");
     }
     return context;
 }
