@@ -1,7 +1,17 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
+  "functions": {
+    "api/charts/[id].ts": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  },
   "rewrites": [
+    {
+      "source": "/api/charts/:id",
+      "destination": "/api/charts/[id]"
+    },
     {
       "source": "/api/(.*)",
       "destination": "/api/$1"

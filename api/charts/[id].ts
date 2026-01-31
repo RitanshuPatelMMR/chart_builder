@@ -1,8 +1,8 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { connectDB } from "../../lib/mongodb.js";  // ← Add .js
-import { requireAuth } from "../../lib/auth.js";  // ← Add .js
-import { setCorsHeaders } from "../../lib/cors.js";  // ← Add .js
-import { Chart } from "../../models/Chart.js";  // ← Add .js
+import { connectDB } from "../../lib/mongodb.js";
+import { requireAuth } from "../../lib/auth.js";
+import { setCorsHeaders } from "../../lib/cors.js";
+import { Chart } from "../../models/Chart.js";
 
 export default async function handler(
     req: VercelRequest,
@@ -23,7 +23,7 @@ export default async function handler(
             return res.status(400).json({ error: "Invalid chart ID" });
         }
 
-        // GET /api/charts/:id - Get single chart
+        // GET /api/charts/:id
         if (req.method === "GET") {
             console.log("📥 GET /api/charts/:id - Chart:", id);
 
@@ -51,21 +51,23 @@ export default async function handler(
             });
         }
 
-        // PUT /api/charts/:id - Update chart
+        // PUT /api/charts/:id
         if (req.method === "PUT") {
-            console.log("📝 Updating chart:", id);
+            console.log("📝 PUT /api/charts/:id - Updating chart:", id);
+            console.log("📝 Updates:", req.body);
 
             const chart = await Chart.findOneAndUpdate(
                 { _id: id, userId },
-                { ...req.body },
-                { new: true }
+                { $set: req.body },
+                { new: true, runValidators: true }
             );
 
             if (!chart) {
+                console.log("❌ Chart not found for update");
                 return res.status(404).json({ error: "Chart not found" });
             }
 
-            console.log("✅ Chart updated");
+            console.log("✅ Chart updated successfully");
             return res.status(200).json({
                 id: chart._id.toString(),
                 name: chart.name,
@@ -82,28 +84,32 @@ export default async function handler(
             });
         }
 
-        // DELETE /api/charts/:id - Delete chart
+        // DELETE /api/charts/:id
         if (req.method === "DELETE") {
-            console.log("🗑️ Deleting chart:", id);
+            console.log("🗑️ DELETE /api/charts/:id - Deleting chart:", id);
 
             const result = await Chart.deleteOne({ _id: id, userId });
 
             if (result.deletedCount === 0) {
-                return res.status(404).json({ success: false });
+                console.log("❌ Chart not found for deletion");
+                return res.status(404).json({ success: false, error: "Chart not found" });
             }
 
-            console.log("✅ Chart deleted");
+            console.log("✅ Chart deleted successfully");
             return res.status(200).json({ success: true });
         }
 
-        return res.status(405).json({ error: "Method not allowed" });
+        // Method not supported
+        console.log("❌ Method not allowed:", req.method);
+        return res.status(405).json({ error: `Method ${req.method} not allowed` });
+
     } catch (error: any) {
-        console.error("❌ Chart API error:", error);
+        console.error("❌ Chart [id] API error:", error);
 
         if (error.message === "Unauthorized") {
             return res.status(401).json({ error: "Unauthorized" });
         }
 
-        return res.status(500).json({ error: "Internal server error" });
+        return res.status(500).json({ error: "Internal server error", details: error.message });
     }
 }
